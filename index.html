@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MHC Go-to-Market Calendar</title>
+<title>Moe's — GTM Calendar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -14,15 +14,16 @@
   --fw26:#1e40af;--fw26bg:#dbeafe;--ss27:#065f46;--ss27bg:#d1fae5;--fw27:#5b21b6;--fw27bg:#ede9fe;
   --r:10px;--rs:6px;--t:.2s ease;--sh:0 2px 10px rgba(0,0,0,.07);--sh2:0 4px 24px rgba(0,0,0,.11);
 }
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--dark);font-size:14px;line-height:1.5;letter-spacing:.02em;min-height:100vh}
-.site-header{background:var(--dark);color:var(--white);padding:0 2rem;position:sticky;top:0;z-index:200;box-shadow:0 1px 0 rgba(255,255,255,.08)}
-.header-inner{display:flex;align-items:center;justify-content:space-between;height:62px;max-width:1600px;margin:0 auto}
-.brand{display:flex;align-items:center;gap:1rem}
-.brand-logo{font-size:1.35rem;font-weight:700;letter-spacing:.1em}
-.brand-divider{width:1px;height:22px;background:rgba(255,255,255,.22)}
-.brand-title{font-size:.82rem;font-weight:400;letter-spacing:.06em;color:rgba(255,255,255,.65);text-transform:uppercase}
-.today-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:4px 13px;font-size:.72rem;letter-spacing:.04em;color:rgba(255,255,255,.78)}
-.season-nav{background:var(--white);border-bottom:2px solid #eaeaea;padding:0 2rem;position:sticky;top:62px;z-index:199;overflow-x:auto}
+body{font-family:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--dark);font-size:14px;line-height:1.5;letter-spacing:.02em;min-height:100vh}
+.site-header{background:var(--white);color:var(--dark);padding:0 2rem;position:sticky;top:0;z-index:200;border-bottom:1.5px solid #3a3d3b}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:68px;max-width:1600px;margin:0 auto}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand-logo{font-size:1.1rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--dark);line-height:1}
+.brand-subtitle{font-size:.65rem;font-weight:400;letter-spacing:.12em;color:var(--gray);text-transform:uppercase}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.last-updated{font-size:.62rem;font-weight:400;letter-spacing:.06em;color:var(--gray);text-transform:uppercase}
+.today-chip{background:var(--bg);border:1px solid #d8d8d8;border-radius:4px;padding:4px 12px;font-size:.7rem;letter-spacing:.05em;color:var(--dark);font-weight:500}
+.season-nav{background:var(--white);border-bottom:2px solid #eaeaea;padding:0 2rem;position:sticky;top:69px;z-index:199;overflow-x:auto}
 .season-tabs{display:flex;max-width:1600px;margin:0 auto;align-items:center}
 .season-tab{padding:.85rem 1.2rem;font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--gray);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;transition:var(--t);white-space:nowrap;flex-shrink:0}
 .season-tab:hover{color:var(--dark)}
@@ -53,6 +54,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .main{max-width:1600px;margin:0 auto;padding:1.4rem 2rem}
 .summary-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;gap:1rem;flex-wrap:wrap}
 .results-count{font-size:.78rem;color:var(--gray);font-weight:500}
+.dates-note{font-size:.7rem;color:var(--gray);background:var(--white);border:1px solid #e4e4e4;border-radius:4px;padding:3px 10px;letter-spacing:.03em;display:flex;align-items:center;gap:5px;white-space:nowrap}
 .legend{display:flex;gap:.9rem;flex-wrap:wrap}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--gray2);font-weight:500}
 .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -180,11 +182,13 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 <header class="site-header">
   <div class="header-inner">
     <div class="brand">
-      <span class="brand-logo">MHC</span>
-      <span class="brand-divider"></span>
-      <span class="brand-title">Go-to-Market Calendar</span>
+      <span class="brand-logo">Moe&#8217;s &mdash; GTM Calendar</span>
+      <span class="brand-subtitle">Go-to-Market Planning</span>
     </div>
-    <span class="today-chip" id="today-chip"></span>
+    <div class="header-right">
+      <span class="today-chip" id="today-chip"></span>
+      <span class="last-updated">Last updated: March 06, 2026</span>
+    </div>
   </div>
 </header>
 <nav class="season-nav">
@@ -204,6 +208,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 <div class="main">
   <div class="summary-bar" id="summary-bar">
     <span class="results-count" id="results-count"></span>
+    <span class="dates-note">&#128197; Dates shown are the Monday of that week</span>
     <div class="legend" id="legend"></div>
   </div>
   <div id="view-content"></div>
