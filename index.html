@@ -96,6 +96,10 @@ body{font-family:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .overdue{color:var(--red)!important;font-weight:600}
 .upcoming{color:#2a6e00;font-weight:600}
 .today-row td:first-child{border-left:3px solid var(--amber)}
+.row-overdue{background:#fff5f5!important}.row-overdue td:first-child{border-left:3px solid var(--red)!important}
+.row-this-week{background:#f0fdf4!important}.row-this-week td:first-child{border-left:3px solid var(--green)!important}
+.row-no-date td{opacity:.6}
+.compact .td-desc,.compact .td-comment{display:none}
 .team-dots{display:flex;flex-wrap:wrap;gap:2px}
 .tdot{display:inline-flex;align-items:center;justify-content:center;padding:2px 5px;border-radius:4px;font-size:.6rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
 .tdot-PLANNING{background:#dbeafe;color:#1d4ed8}
@@ -232,7 +236,8 @@ let state = {
   overlapSeasons:{FW26:true,SS27:true,FW27:true},
   calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
   calSelected: null,
-  stepsSearch:'', stepsType:'', stepsStage:''
+  stepsSearch:'', stepsType:'', stepsStage:'',
+  filterStatus:'', compact:false
 };
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -251,6 +256,8 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
 function isOverdue(d){ if(!d) return false; return new Date(d)<new Date()&&!isThisWeek(d); }
 function isThisWeek(d){ if(!d) return false; return Math.abs(new Date(d)-new Date())<7*24*3600*1000; }
 function isThisMonth(d){ if(!d) return false; const dt=new Date(d),n=new Date(); return dt.getFullYear()===n.getFullYear()&&dt.getMonth()===n.getMonth(); }
+function calcWeeksFromToday(d){ if(!d) return null; const diff=new Date(d)-new Date(); return Math.round(diff/(7*24*3600*1000)); }
+function getStatus(row){ const d=getDate(row); if(!d) return 'no-date'; if(isOverdue(d)) return 'overdue'; if(isThisWeek(d)) return 'this-week'; return 'upcoming'; }
 function badgeCls(type){ return 'badge badge-'+(TYPE_COLORS[type]?type:'default'); }
 function teamCls(t){ return 'tdot tdot-'+t.replace(/\s+/g,'-'); }
 function seasonBadge(s){ return `<span class="season-badge season-badge-${s}">${SEASON_LABELS[s]||s}</span>`; }
@@ -265,6 +272,7 @@ function filterRows(rows){
     if(state.filterType&&getType(row)!==state.filterType) return false;
     if(state.filterStage&&getStage(row)!==state.filterStage) return false;
     if(state.filterTeam&&!getTeams(row).includes(state.filterTeam)) return false;
+    if(state.filterStatus&&getStatus(row)!==state.filterStatus) return false;
     return true;
   });
 }
@@ -299,8 +307,18 @@ function toolbarSeason(rows){
     <select class="filter-select" id="filter-team">
       <option value="">All Teams</option>${teamsUsed.map(t=>`<option value="${esc(t)}"${state.filterTeam===t?' selected':''}>${t}</option>`).join('')}
     </select>
+    <select class="filter-select" id="filter-status">
+      <option value="">All Status</option>
+      <option value="overdue"${state.filterStatus==='overdue'?' selected':''}>Overdue</option>
+      <option value="this-week"${state.filterStatus==='this-week'?' selected':''}>This Week</option>
+      <option value="upcoming"${state.filterStatus==='upcoming'?' selected':''}>Upcoming</option>
+      <option value="no-date"${state.filterStatus==='no-date'?' selected':''}>No Date</option>
+    </select>
     <span class="toolbar-spacer"></span>
     <div class="view-toggle">
+      <button class="view-btn${state.compact?' active':''}" onclick="toggleCompact()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="14" x2="21" y2="14"/><line x1="3" y1="18" x2="21" y2="18"/></svg>Compact
+      </button>
       <button class="view-btn${state.view==='table'?' active':''}" data-view="table">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>List
       </button>
@@ -344,28 +362,34 @@ function toolbarCalendar(){
     </div>`;
 }
 
+function toggleCompact(){ state.compact=!state.compact; render(); }
+
 // ── render TABLE (season) ─────────────────────────────────────────────────────
 function renderTable(rows){
   if(!rows.length) return `<div class="empty-state"><h3>No steps found</h3><p>Try adjusting filters.</p></div>`;
   function th(col,label){ const cls=state.sortCol===col?'sort-'+state.sortDir:''; return `<th class="${cls}" data-sort="${col}">${label}</th>`; }
   const rowsHtml=rows.map(row=>{
     const type=getType(row),stage=getStage(row),desc=getDesc(row),comment=getComment(row);
-    const dateStr=getDate(row),fmted=fmtDate(dateStr),weeks=getWeeks(row),teams=getTeams(row);
-    const overdue=isOverdue(dateStr),thisWeek=isThisWeek(dateStr),todayRow=isThisMonth(dateStr);
+    const dateStr=getDate(row),fmted=fmtDate(dateStr),teams=getTeams(row);
+    const status=getStatus(row);
+    const overdue=status==='overdue',thisWeek=status==='this-week';
+    const weeksNum=calcWeeksFromToday(dateStr);
+    const weeksFmt=weeksNum===null?'—':weeksNum===0?'&lt;1w':weeksNum<0?`<span class="overdue">${weeksNum}w</span>`:`${weeksNum}w`;
     const dots=teams.map(t=>`<span class="${teamCls(t)}" title="${esc(t)}">${TEAM_SHORT[t]||t.slice(0,3)}</span>`).join('');
     const dateCls=overdue?'overdue':thisWeek?'upcoming':'';
-    return `<tr class="${todayRow&&!overdue?'today-row':''}">
+    const rowCls=overdue?'row-overdue':thisWeek?'row-this-week':'';
+    return `<tr class="${rowCls}">
       <td>${type?`<span class="${badgeCls(type)}">${esc(type)}</span>`:''}</td>
       <td class="td-stage">${esc(stage)}</td>
       <td class="td-desc">${esc(desc)}</td>
       <td class="td-date ${dateCls}">${fmted||'—'}</td>
-      <td class="td-weeks">${weeks!==null?weeks:'—'}</td>
+      <td class="td-weeks">${weeksFmt}</td>
       <td><div class="team-dots">${dots}</div></td>
       <td class="td-comment">${esc(comment)}</td>
     </tr>`;
   }).join('');
-  return `<div class="table-wrap fade-in"><table class="gtm-table"><thead><tr>${th('TYPE','Type')}${th('STAGE','Stage')}
-    <th>Description</th>${th('DATE','Date')}<th>Wks</th><th>Teams</th><th>Notes</th>
+  return `<div class="table-wrap fade-in${state.compact?' compact':''}"><table class="gtm-table"><thead><tr>${th('TYPE','Type')}${th('STAGE','Stage')}
+    <th class="td-desc">Description</th>${th('DATE','Date')}<th>Wks ↔ today</th><th>Teams</th><th class="td-comment">Notes</th>
   </tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
 }
 
@@ -616,6 +640,7 @@ function render(){
     const ft=document.getElementById('filter-type'); ft&&ft.addEventListener('change',e=>{state.filterType=e.target.value;render();});
     const fs=document.getElementById('filter-stage'); fs&&fs.addEventListener('change',e=>{state.filterStage=e.target.value;render();});
     const fm=document.getElementById('filter-team'); fm&&fm.addEventListener('change',e=>{state.filterTeam=e.target.value;render();});
+    const fst=document.getElementById('filter-status'); fst&&fst.addEventListener('change',e=>{state.filterStatus=e.target.value;render();});
     document.querySelectorAll('.view-btn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); state.view=btn.dataset.view; render(); }));
   }
   else if(tab==='STEPS'){
@@ -647,7 +672,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       document.querySelectorAll('.season-tab').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       state.tab=btn.dataset.tab;
-      state.filterType=''; state.filterStage=''; state.filterTeam=''; state.search='';
+      state.filterType=''; state.filterStage=''; state.filterTeam=''; state.search=''; state.filterStatus='';
       state.calSelected=null;
       render();
     });
