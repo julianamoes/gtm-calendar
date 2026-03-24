@@ -165,6 +165,19 @@ body{font-family:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .empty-state h3{font-size:1.05rem;margin-bottom:.4rem}
 .empty-state p{color:var(--gray);font-size:.88rem}
 @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.guide-wrap{max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.guide-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);padding:1.6rem 2rem}
+.guide-card h3{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray2);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid #eaeaea}
+.guide-section{margin-bottom:1.1rem}
+.guide-section h4{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--dark);margin-bottom:.45rem}
+.guide-section ul{padding-left:1.1rem;margin:0}
+.guide-section li{font-size:.84rem;color:#555;line-height:1.65;margin-bottom:.2rem}
+.guide-section p{font-size:.84rem;color:#555;line-height:1.65;margin-bottom:.5rem}
+.raci-table{width:100%;border-collapse:collapse;margin-top:.4rem}
+.raci-table th{padding:7px 11px;text-align:left;font-size:.67rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gray2);background:#f7f7f7;border-bottom:1px solid #eaeaea}
+.raci-table td{padding:9px 11px;font-size:.83rem;border-bottom:1px solid #f5f5f5;vertical-align:top;line-height:1.5}
+.raci-table tr:last-child td{border-bottom:none}
+.color-dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
 .fade-in{animation:fadeUp .18s ease both}
 @media(max-width:900px){
   .site-header{padding:0 1rem}
@@ -197,6 +210,8 @@ body{font-family:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 </header>
 <nav class="season-nav">
   <div class="season-tabs">
+    <button class="season-tab" data-tab="GUIDE">&#9432; How to Use</button>
+    <div class="nav-divider"></div>
     <button class="season-tab active" data-tab="FW26">FW 2026</button>
     <button class="season-tab" data-tab="SS27">SS 2027</button>
     <button class="season-tab" data-tab="FW27">FW 2027</button>
@@ -363,6 +378,93 @@ function toolbarCalendar(){
 }
 
 function toggleCompact(){ state.compact=!state.compact; render(); }
+
+// ── render GUIDE ──────────────────────────────────────────────────────────────
+function renderGuide(){
+  return `<div class="guide-wrap fade-in">
+    <div class="guide-card">
+      <h3>How to use this calendar</h3>
+      <div class="guide-section">
+        <h4>Tabs</h4>
+        <ul>
+          <li><strong>FW 2026 / SS 2027 / FW 2027</strong> — Seasonal GTM calendars with all steps, dates, and team assignments.</li>
+          <li><strong>Steps</strong> — Master list of every step with full RACI assignments across all teams.</li>
+          <li><strong>Overlap</strong> — Compare multiple seasons side by side on a single timeline.</li>
+          <li><strong>Calendar</strong> — Monthly grid view across all active seasons.</li>
+        </ul>
+      </div>
+      <div class="guide-section">
+        <h4>Filters</h4>
+        <ul>
+          <li><strong>Search</strong> — Filter by keyword across stage, description, and notes.</li>
+          <li><strong>Type</strong> — Filter by step type (Checkpoint, Meeting, Deadline…).</li>
+          <li><strong>Stage</strong> — Narrow down to a specific stage or milestone.</li>
+          <li><strong>Team</strong> — Show only steps that involve a specific team.</li>
+          <li><strong>Status</strong> — Filter by Overdue, This Week, Upcoming, or No Date.</li>
+        </ul>
+      </div>
+      <div class="guide-section">
+        <h4>Views</h4>
+        <ul>
+          <li><strong>List</strong> — Sortable table. Click any column header to sort.</li>
+          <li><strong>Timeline</strong> — Steps grouped by month, collapsible sections.</li>
+          <li><strong>Compact</strong> — Hides description and notes for a denser overview.</li>
+        </ul>
+      </div>
+      <div class="guide-section">
+        <h4>Row colours &amp; dates</h4>
+        <ul>
+          <li><span class="color-dot" style="background:#ffcccc;border:1px solid #f5a0a0"></span><strong>Red row</strong> — Step is overdue (past due date).</li>
+          <li><span class="color-dot" style="background:#dcfce7;border:1px solid #86efac"></span><strong>Green row</strong> — Step is due this week.</li>
+          <li><strong>Wks ↔ today</strong> — Live countdown from today. Negative = overdue.</li>
+          <li>Dates shown are the Monday of that week.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="guide-card">
+      <h3>RACI — definitions</h3>
+      <p>RACI defines each team's role for every step. Use the <strong>Steps</strong> tab to see full assignments.</p>
+      <table class="raci-table">
+        <thead><tr><th style="width:44px">Letter</th><th style="width:110px">Role</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="raci-badge raci-R">R</span></td>
+            <td style="font-weight:600">Responsible</td>
+            <td>Does the work. The team or person who executes the task.</td>
+          </tr>
+          <tr>
+            <td><span class="raci-badge raci-A">A</span></td>
+            <td style="font-weight:600">Accountable</td>
+            <td>Owns the outcome and gives final approval. Only one per step.</td>
+          </tr>
+          <tr>
+            <td><span class="raci-badge raci-C">C</span></td>
+            <td style="font-weight:600">Consulted</td>
+            <td>Provides input before the step is done. Two-way communication.</td>
+          </tr>
+          <tr>
+            <td><span class="raci-badge raci-I">I</span></td>
+            <td style="font-weight:600">Informed</td>
+            <td>Kept in the loop after the step is done. One-way communication.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="guide-section" style="margin-top:1.6rem">
+        <h4>Step types</h4>
+        <table class="raci-table">
+          <thead><tr><th style="width:100px">Badge</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-CHECKPOINT">Checkpoint</span></td><td>Key review or approval gate.</td></tr>
+            <tr><td><span class="badge badge-MEETING">Meeting</span></td><td>Scheduled team meeting or presentation.</td></tr>
+            <tr><td><span class="badge badge-DEADLINE">Deadline</span></td><td>Hard cutoff — something must be completed by this date.</td></tr>
+            <tr><td><span class="badge badge-DELIVERABLE">Deliverable</span></td><td>A tangible output must be ready and handed over.</td></tr>
+            <tr><td><span class="badge badge-STEP">Step</span></td><td>A general process action or task.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
 
 // ── render TABLE (season) ─────────────────────────────────────────────────────
 function renderTable(rows){
@@ -621,7 +723,12 @@ function render(){
   const sb=document.getElementById('summary-bar');
   const tab=state.tab;
 
-  if(SEASONS.includes(tab)){
+  if(tab==='GUIDE'){
+    sb.style.display='none';
+    ti.innerHTML='';
+    vc.innerHTML=renderGuide();
+  }
+  else if(SEASONS.includes(tab)){
     sb.style.display='flex';
     const all=getSeasonData(); const filtered=filterRows(all); const sorted=state.view==='table'?sortRows(filtered):filtered;
     ti.innerHTML=toolbarSeason(all);
