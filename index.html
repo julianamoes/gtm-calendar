@@ -396,8 +396,9 @@ function renderTable(rows){
     const dateCls=overdue?'overdue':thisWeek?'upcoming':'';
     const name=getName(row);
     return `<tr class="${todayRow&&!overdue?'today-row':''}">
-      <td>${type?`<span class="${badgeCls(type)}">${esc(type)}</span>`:''}</td>
-      <td class="td-stage"><div style="font-weight:700;font-size:.82rem">${esc(name||stage)}</div>${name&&name!==stage?`<div style="font-size:.68rem;color:var(--gray2);margin-top:2px;text-transform:uppercase;letter-spacing:.04em">${esc(stage)}</div>`:''}</td>
+      <td>${type?`<span class="${badgeCls(type)}" style="font-size:.62rem;padding:2px 6px">${esc(type)}</span>`:''}</td>
+      <td class="td-stage" style="font-size:.7rem;font-weight:500;color:var(--gray2)">${esc(stage)}</td>
+      <td style="font-weight:600;font-size:.83rem;max-width:220px">${esc(name||stage)}</td>
       <td class="td-desc">${esc(desc)}</td>
       <td class="td-date ${dateCls}">${fmted||'—'}</td>
       <td class="td-weeks">${weeks!==null?weeks:'—'}</td>
@@ -406,7 +407,7 @@ function renderTable(rows){
     </tr>`;
   }).join('');
   return `<div class="table-wrap fade-in"><table class="gtm-table"><thead><tr>${th('TYPE','Type')}${th('STAGE','Stage')}
-    <th>Description</th>${th('DATE','Date')}<th>Wks</th><th>Teams</th><th>Notes</th>
+    <th>Step Name</th><th>Description</th>${th('DATE','Date')}<th>Wks</th><th>Teams</th><th>Notes</th>
   </tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
 }
 
