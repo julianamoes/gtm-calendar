@@ -237,7 +237,7 @@ const TEAM_SHORT = {'PLANNING':'PLN','PD TEAM':'PD','DATA TEAM':'DATA','SOURCING
 const TYPE_COLORS = {CHECKPOINT:'#e9596a',MEETING:'#216ba5',STEP:'#9ca3af',DEADLINE:'#e07b00',DELIVERABLE:'#2a9d5c'};
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const LAUNCH_DATES = {FW26:'2026-09-21',SS27:'2027-03-01',FW27:'2027-09-20'};
+const APPROVED_SAMPLES_DATES = {FW26:'2026-07-20',SS27:'2027-01-04',FW27:'2027-07-26'};
 
 let state = {
   tab:'FW26', view:'table',
@@ -260,8 +260,20 @@ function getStage(r){ return (r.STAGE||'').trim(); }
 function getMenu(r){ return (r.MENU||r.STAGE||'').trim(); }
 function getDesc(r){ return (r.DESCRIPTION||r.COMMENT||'').trim(); }
 function getComment(r){ return (r.COMMENTS||r.COMMENT||'').trim(); }
-function simCalc(launch,weeks){if(!launch||weeks===null||weeks===undefined)return null;const dt=new Date(launch.slice(0,10)+'T00:00:00');dt.setDate(dt.getDate()+weeks*7);const y=dt.getFullYear(),mo=String(dt.getMonth()+1).padStart(2,'0'),d=String(dt.getDate()).padStart(2,'0');return `${y}-${mo}-${d} 00:00:00`;}
-function getDate(r,season){const s=season||r._season||state.tab;if(state.simOpen&&SEASONS.includes(s)){const launch=state.sim[s]||LAUNCH_DATES[s];const w=r['WEEKS TO LAUNCH'];return(w!==null&&w!==undefined)?simCalc(launch,w):null;}return r.DATE||null;}
+function getDate(r,season){
+  const s=season||r._season||state.tab;
+  if(state.simOpen&&state.sim[s]&&APPROVED_SAMPLES_DATES[s]){
+    const orig=r.DATE;if(!orig)return null;
+    const origDt=new Date(orig.slice(0,10)+'T00:00:00');if(isNaN(origDt))return null;
+    const origAW=new Date(APPROVED_SAMPLES_DATES[s]+'T00:00:00');
+    const newAW=new Date(state.sim[s]+'T00:00:00');
+    const delta=Math.round((newAW-origAW)/86400000);
+    origDt.setDate(origDt.getDate()+delta);
+    const y=origDt.getFullYear(),mo=String(origDt.getMonth()+1).padStart(2,'0'),d=String(origDt.getDate()).padStart(2,'0');
+    return `${y}-${mo}-${d} 00:00:00`;
+  }
+  return r.DATE||null;
+}
 function getWeeks(r){ const w=r['WEEKS TO LAUNCH']; return (w!==undefined&&w!==null)?w:null; }
 function getTeams(r){ return TEAMS_SEASON.filter(t=>r[t]&&String(r[t]).trim()); }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -517,7 +529,7 @@ function setSim(val){
 function updateSimBadge(){
   const s=state.tab,panel=document.getElementById('sim-bar');
   if(!panel)return;
-  const changed=state.sim[s]&&state.sim[s]!==LAUNCH_DATES[s];
+  const changed=state.sim[s]&&state.sim[s]!==APPROVED_SAMPLES_DATES[s];
   let badge=panel.querySelector('.sim-active-badge');
   if(changed&&!badge){const inner=panel.querySelector('.sim-inner');if(inner)inner.insertAdjacentHTML('beforeend','<span class="sim-active-badge">Simulating</span>');}
   else if(!changed&&badge){badge.remove();}
@@ -527,7 +539,7 @@ function resetSim(){
   const panel=document.getElementById('sim-bar');
   if(panel){
     const si=document.getElementById('sim-date');
-    if(si)si.value=LAUNCH_DATES[state.tab]||'';
+    if(si)si.value=APPROVED_SAMPLES_DATES[state.tab]||'';
     updateSimBadge();
   }
   const vc=document.getElementById('view-content'),tab=state.tab;
@@ -543,7 +555,7 @@ function renderSimPanel(){
   const s=state.tab,panel=document.getElementById('sim-bar');
   if(!panel)return;
   if(!SEASONS.includes(s)||!state.simOpen){panel.classList.remove('open');panel.innerHTML='';return;}
-  const origDate=LAUNCH_DATES[s]||'';
+  const origDate=APPROVED_SAMPLES_DATES[s]||'';
   const curDate=state.sim[s]||origDate;
   const changed=state.sim[s]&&state.sim[s]!==origDate;
   if(panel.dataset.season===s&&panel.classList.contains('open')){
@@ -555,8 +567,8 @@ function renderSimPanel(){
   panel.dataset.season=s;
   panel.classList.add('open');
   panel.innerHTML=`<div class="sim-inner">
-    <span class="sim-label">&#128197; Simulate Launch — ${SEASON_LABELS[s]}</span>
-    <span style="font-size:.72rem;font-weight:600;color:var(--gray2)">Launch date:</span>
+    <span class="sim-label">&#128197; Simulate — ${SEASON_LABELS[s]}</span>
+    <span style="font-size:.72rem;font-weight:600;color:var(--gray2)">Approved samples in WH:</span>
     <input type="date" class="sim-date-input" id="sim-date" value="${curDate.slice(0,10)}" oninput="setSim(this.value)">
     <button class="sim-reset-btn" onclick="resetSim()">&#8635; Reset to original</button>
     ${changed?'<span class="sim-active-badge">Simulating</span>':''}
