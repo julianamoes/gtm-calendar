@@ -262,6 +262,7 @@ function fmtDay(d){ if(!d) return '—'; return new Date(d).toLocaleDateString('
 function getType(r){ return (r.TYPE||'').trim().toUpperCase(); }
 function getStage(r){ return (r.STAGE||'').trim(); }
 function getMenu(r){ return (r.NAME||r.MENU||r.STAGE||'').trim(); }
+function getName(r){ return (r.NAME||r.MENU||'').trim(); }
 function getDesc(r){ return (r.DESCRIPTION||r.COMMENT||'').trim(); }
 function getComment(r){ return (r.COMMENTS||r.COMMENT||'').trim(); }
 function getDate(r,season){
@@ -393,9 +394,10 @@ function renderTable(rows){
     const overdue=isOverdue(dateStr),thisWeek=isThisWeek(dateStr),todayRow=isThisMonth(dateStr);
     const dots=teams.map(t=>`<span class="${teamCls(t)}" title="${esc(t)}">${TEAM_SHORT[t]||t.slice(0,3)}</span>`).join('');
     const dateCls=overdue?'overdue':thisWeek?'upcoming':'';
+    const name=getName(row);
     return `<tr class="${todayRow&&!overdue?'today-row':''}">
       <td>${type?`<span class="${badgeCls(type)}">${esc(type)}</span>`:''}</td>
-      <td class="td-stage">${esc(stage)}</td>
+      <td class="td-stage"><div style="font-weight:700;font-size:.82rem">${esc(name||stage)}</div>${name&&name!==stage?`<div style="font-size:.68rem;color:var(--gray2);margin-top:2px;text-transform:uppercase;letter-spacing:.04em">${esc(stage)}</div>`:''}</td>
       <td class="td-desc">${esc(desc)}</td>
       <td class="td-date ${dateCls}">${fmted||'—'}</td>
       <td class="td-weeks">${weeks!==null?weeks:'—'}</td>
@@ -422,7 +424,8 @@ function renderTimeline(rows){
       const dateCls=overdue?'overdue':thisWeek?'upcoming':'';
       return `<div class="tl-row"><div class="tl-date ${dateCls}">${fmtDay(dateStr)}</div>
         <div class="tl-content"><div class="tl-meta">${type?`<span class="${badgeCls(type)}" style="font-size:.62rem">${esc(type)}</span>`:''}</div>
-        <div class="tl-stage">${esc(stage)}</div>${desc&&desc!==stage?`<div class="tl-desc">${esc(desc)}</div>`:''} ${comment?`<div class="tl-comment">${esc(comment)}</div>`:''}</div>
+        ${(()=>{const n=getName(row);return `<div class="tl-stage">${esc(n||stage)}</div>${n&&n!==stage?`<div style="font-size:.68rem;color:var(--gray2);text-transform:uppercase;letter-spacing:.04em">${esc(stage)}</div>`:''}`; })()}
+        ${desc&&desc!==stage&&desc!==getName(row)?`<div class="tl-desc">${esc(desc)}</div>`:''} ${comment?`<div class="tl-comment">${esc(comment)}</div>`:''}</div>
         <div class="tl-teams">${dots}</div></div>`;
     }).join('');
     return `<div class="month-group fade-in ${grp.thisMonth?'today-group':''}">
@@ -505,8 +508,8 @@ function renderOverlap(){
           ${seasonBadge(s)}
           ${type?`<span class="${badgeCls(type)}" style="font-size:.62rem">${esc(type)}</span>`:''}
         </div>
-        <div class="tl-stage">${esc(stage)}</div>
-        ${desc&&desc!==stage?`<div class="tl-desc">${esc(desc)}</div>`:''}
+        ${(()=>{const n=getName(row);return `<div class="tl-stage">${esc(n||stage)}</div>${n&&n!==stage?`<div style="font-size:.68rem;color:var(--gray2);text-transform:uppercase;letter-spacing:.04em">${esc(stage)}</div>`:''}`; })()}
+        ${(()=>{const n=getName(row);const d=getDesc(row);return d&&d!==stage&&d!==n?`<div class="tl-desc">${esc(d)}</div>`:''})()}
         ${comment?`<div class="tl-comment">${esc(comment)}</div>`:''}
         </div>
         <div class="tl-teams">${dots}</div></div>`;
@@ -630,7 +633,7 @@ function renderCalendar(){
     const steps=byDate[key]||[];
     const count=steps.length;
     const chips=steps.slice(0,MAX_CHIPS).map((row,i)=>{
-      const s=row._season,label=getStage(row)||getMenu(row)||getType(row);
+      const s=row._season,label=getName(row)||getStage(row)||getType(row);
       const idx=allStepsInMonth.indexOf(row);
       return `<span class="cal-chip cal-chip-${s}" title="${esc(getMenu(row)||getStage(row))}" onclick="showCalDetail(${JSON.stringify(JSON.stringify({s,stage:getStage(row),name:getMenu(row),menu:getMenu(row),type:getType(row),desc:getDesc(row),date:getDate(row,s),weeks:getWeeks(row),teams:getTeams(row),comment:getComment(row)}))},event)">${esc(label)}</span>`;
     }).join('');
