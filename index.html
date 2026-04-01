@@ -96,10 +96,6 @@ body{font-family:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .overdue{color:var(--red)!important;font-weight:600}
 .upcoming{color:#2a6e00;font-weight:600}
 .today-row td:first-child{border-left:3px solid var(--amber)}
-.row-overdue{background:#fff5f5!important}.row-overdue td:first-child{border-left:3px solid var(--red)!important}
-.row-this-week{background:#f0fdf4!important}.row-this-week td:first-child{border-left:3px solid var(--green)!important}
-.row-no-date td{opacity:.6}
-.compact .td-desc,.compact .td-comment{display:none}
 .team-dots{display:flex;flex-wrap:wrap;gap:2px}
 .tdot{display:inline-flex;align-items:center;justify-content:center;padding:2px 5px;border-radius:4px;font-size:.6rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
 .tdot-PLANNING{background:#dbeafe;color:#1d4ed8}
@@ -165,19 +161,6 @@ body{font-family:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .empty-state h3{font-size:1.05rem;margin-bottom:.4rem}
 .empty-state p{color:var(--gray);font-size:.88rem}
 @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.guide-wrap{max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-.guide-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);padding:1.6rem 2rem}
-.guide-card h3{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray2);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid #eaeaea}
-.guide-section{margin-bottom:1.1rem}
-.guide-section h4{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--dark);margin-bottom:.45rem}
-.guide-section ul{padding-left:1.1rem;margin:0}
-.guide-section li{font-size:.84rem;color:#555;line-height:1.65;margin-bottom:.2rem}
-.guide-section p{font-size:.84rem;color:#555;line-height:1.65;margin-bottom:.5rem}
-.raci-table{width:100%;border-collapse:collapse;margin-top:.4rem}
-.raci-table th{padding:7px 11px;text-align:left;font-size:.67rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gray2);background:#f7f7f7;border-bottom:1px solid #eaeaea}
-.raci-table td{padding:9px 11px;font-size:.83rem;border-bottom:1px solid #f5f5f5;vertical-align:top;line-height:1.5}
-.raci-table tr:last-child td{border-bottom:none}
-.color-dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
 .fade-in{animation:fadeUp .18s ease both}
 @media(max-width:900px){
   .site-header{padding:0 1rem}
@@ -193,6 +176,18 @@ body{font-family:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
   .cal-chip{display:none}
   .cal-cell::after{content:attr(data-count);font-size:.58rem;color:var(--gray)}
 }
+.sim-bar{background:#fffce8;border-bottom:2px solid #e07b00;padding:.45rem 2rem;display:none}
+.sim-bar.open{display:block}
+.sim-inner{max-width:1600px;margin:0 auto;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.sim-label{font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#7a5a00;white-space:nowrap}
+.sim-date-input{padding:4px 8px;border:1.5px solid #e0e0e0;border-radius:var(--rs);font-size:.78rem;font-family:inherit;color:var(--dark);outline:none;transition:var(--t)}
+.sim-date-input:focus{border-color:var(--amber)}
+.sim-reset-btn{padding:4px 12px;border:1px solid #e07b00;border-radius:20px;background:none;font-size:.72rem;font-family:inherit;color:#7a5a00;cursor:pointer;font-weight:600;transition:var(--t)}
+.sim-reset-btn:hover{background:#e07b00;color:#fff}
+.sim-active-badge{background:#e07b00;color:#fff;padding:2px 10px;border-radius:12px;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:.25rem}
+.sim-btn{padding:6px 14px;border:1.5px solid #e0e0e0;border-radius:var(--r);font-size:.73rem;font-weight:600;font-family:inherit;background:none;cursor:pointer;color:var(--gray2);transition:var(--t);white-space:nowrap}
+.sim-btn:hover{border-color:var(--amber);color:var(--amber)}
+.sim-btn.active{background:var(--amber);color:#fff;border-color:var(--amber)}
 </style>
 </head>
 <body>
@@ -204,14 +199,12 @@ body{font-family:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
     </div>
     <div class="header-right">
       <span class="today-chip" id="today-chip"></span>
-      <span class="last-updated">Last updated: March 06, 2026</span>
+      <span class="last-updated">Last updated: April 01, 2026</span>
     </div>
   </div>
 </header>
 <nav class="season-nav">
   <div class="season-tabs">
-    <button class="season-tab" data-tab="GUIDE">&#9432; How to Use</button>
-    <div class="nav-divider"></div>
     <button class="season-tab active" data-tab="FW26">FW 2026</button>
     <button class="season-tab" data-tab="SS27">SS 2027</button>
     <button class="season-tab" data-tab="FW27">FW 2027</button>
@@ -224,6 +217,7 @@ body{font-family:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 <div class="toolbar" id="toolbar">
   <div class="toolbar-inner" id="toolbar-inner"></div>
 </div>
+<div id="sim-bar"></div>
 <div class="main">
   <div class="summary-bar" id="summary-bar">
     <span class="results-count" id="results-count"></span>
@@ -243,6 +237,7 @@ const TEAM_SHORT = {'PLANNING':'PLN','PD TEAM':'PD','DATA TEAM':'DATA','SOURCING
 const TYPE_COLORS = {CHECKPOINT:'#e9596a',MEETING:'#216ba5',STEP:'#9ca3af',DEADLINE:'#e07b00',DELIVERABLE:'#2a9d5c'};
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const LAUNCH_DATES = {FW26:'2026-09-21',SS27:'2027-03-01',FW27:'2027-09-20'};
 
 let state = {
   tab:'FW26', view:'table',
@@ -252,7 +247,8 @@ let state = {
   calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
   calSelected: null,
   stepsSearch:'', stepsType:'', stepsStage:'',
-  filterStatus:'', compact:false
+  simOpen:false,
+  sim:{FW26:null,SS27:null,FW27:null}
 };
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -264,15 +260,14 @@ function getStage(r){ return (r.STAGE||'').trim(); }
 function getMenu(r){ return (r.MENU||r.STAGE||'').trim(); }
 function getDesc(r){ return (r.DESCRIPTION||r.COMMENT||'').trim(); }
 function getComment(r){ return (r.COMMENTS||r.COMMENT||'').trim(); }
-function getDate(r){ return r.DATE||null; }
+function simCalc(launch,weeks){if(!launch||weeks===null||weeks===undefined)return null;const dt=new Date(launch.slice(0,10)+'T00:00:00');dt.setDate(dt.getDate()+weeks*7);const y=dt.getFullYear(),mo=String(dt.getMonth()+1).padStart(2,'0'),d=String(dt.getDate()).padStart(2,'0');return `${y}-${mo}-${d} 00:00:00`;}
+function getDate(r,season){const s=season||r._season||state.tab;if(state.simOpen&&SEASONS.includes(s)){const launch=state.sim[s]||LAUNCH_DATES[s];const w=r['WEEKS TO LAUNCH'];return(w!==null&&w!==undefined)?simCalc(launch,w):null;}return r.DATE||null;}
 function getWeeks(r){ const w=r['WEEKS TO LAUNCH']; return (w!==undefined&&w!==null)?w:null; }
 function getTeams(r){ return TEAMS_SEASON.filter(t=>r[t]&&String(r[t]).trim()); }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function isOverdue(d){ if(!d) return false; return new Date(d)<new Date()&&!isThisWeek(d); }
 function isThisWeek(d){ if(!d) return false; return Math.abs(new Date(d)-new Date())<7*24*3600*1000; }
 function isThisMonth(d){ if(!d) return false; const dt=new Date(d),n=new Date(); return dt.getFullYear()===n.getFullYear()&&dt.getMonth()===n.getMonth(); }
-function calcWeeksFromToday(d){ if(!d) return null; const diff=new Date(d)-new Date(); return Math.round(diff/(7*24*3600*1000)); }
-function getStatus(row){ const d=getDate(row); if(!d) return 'no-date'; if(isOverdue(d)) return 'overdue'; if(isThisWeek(d)) return 'this-week'; return 'upcoming'; }
 function badgeCls(type){ return 'badge badge-'+(TYPE_COLORS[type]?type:'default'); }
 function teamCls(t){ return 'tdot tdot-'+t.replace(/\s+/g,'-'); }
 function seasonBadge(s){ return `<span class="season-badge season-badge-${s}">${SEASON_LABELS[s]||s}</span>`; }
@@ -287,13 +282,12 @@ function filterRows(rows){
     if(state.filterType&&getType(row)!==state.filterType) return false;
     if(state.filterStage&&getStage(row)!==state.filterStage) return false;
     if(state.filterTeam&&!getTeams(row).includes(state.filterTeam)) return false;
-    if(state.filterStatus&&getStatus(row)!==state.filterStatus) return false;
     return true;
   });
 }
 function sortRows(rows){
   return [...rows].sort((a,b)=>{
-    if(state.sortCol==='DATE'){ const da=a.DATE?new Date(a.DATE):new Date('2099-01-01'); const db=b.DATE?new Date(b.DATE):new Date('2099-01-01'); return state.sortDir==='asc'?da-db:db-da; }
+    if(state.sortCol==='DATE'){ const da=getDate(a)?new Date(getDate(a)):new Date('2099-01-01'); const db=getDate(b)?new Date(getDate(b)):new Date('2099-01-01'); return state.sortDir==='asc'?da-db:db-da; }
     let va='',vb='';
     if(state.sortCol==='TYPE'){va=getType(a);vb=getType(b);}
     else if(state.sortCol==='STAGE'){va=getStage(a);vb=getStage(b);}
@@ -322,25 +316,16 @@ function toolbarSeason(rows){
     <select class="filter-select" id="filter-team">
       <option value="">All Teams</option>${teamsUsed.map(t=>`<option value="${esc(t)}"${state.filterTeam===t?' selected':''}>${t}</option>`).join('')}
     </select>
-    <select class="filter-select" id="filter-status">
-      <option value="">All Status</option>
-      <option value="overdue"${state.filterStatus==='overdue'?' selected':''}>Overdue</option>
-      <option value="this-week"${state.filterStatus==='this-week'?' selected':''}>This Week</option>
-      <option value="upcoming"${state.filterStatus==='upcoming'?' selected':''}>Upcoming</option>
-      <option value="no-date"${state.filterStatus==='no-date'?' selected':''}>No Date</option>
-    </select>
     <span class="toolbar-spacer"></span>
     <div class="view-toggle">
-      <button class="view-btn${state.compact?' active':''}" onclick="toggleCompact()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="14" x2="21" y2="14"/><line x1="3" y1="18" x2="21" y2="18"/></svg>Compact
-      </button>
       <button class="view-btn${state.view==='table'?' active':''}" data-view="table">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>List
       </button>
       <button class="view-btn${state.view==='timeline'?' active':''}" data-view="timeline">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Timeline
       </button>
-    </div>`;
+    </div>
+    <button class="sim-btn${state.simOpen?' active':''}" onclick="toggleSimPanel()" title="Simulate a different launch date">&#128197; Simulate</button>`;
 }
 function toolbarSteps(rows){
   const all=GTM_DATA['LIST_OF_STEPS']||[];
@@ -377,128 +362,35 @@ function toolbarCalendar(){
     </div>`;
 }
 
-function toggleCompact(){ state.compact=!state.compact; render(); }
-
-// ── render GUIDE ──────────────────────────────────────────────────────────────
-function renderGuide(){
-  return `<div class="guide-wrap fade-in">
-    <div class="guide-card">
-      <h3>How to use this calendar</h3>
-      <div class="guide-section">
-        <h4>Tabs</h4>
-        <ul>
-          <li><strong>FW 2026 / SS 2027 / FW 2027</strong> — Seasonal GTM calendars with all steps, dates, and team assignments.</li>
-          <li><strong>Steps</strong> — Master list of every step with full RACI assignments across all teams.</li>
-          <li><strong>Overlap</strong> — Compare multiple seasons side by side on a single timeline.</li>
-          <li><strong>Calendar</strong> — Monthly grid view across all active seasons.</li>
-        </ul>
-      </div>
-      <div class="guide-section">
-        <h4>Filters</h4>
-        <ul>
-          <li><strong>Search</strong> — Filter by keyword across stage, description, and notes.</li>
-          <li><strong>Type</strong> — Filter by step type (Checkpoint, Meeting, Deadline…).</li>
-          <li><strong>Stage</strong> — Narrow down to a specific stage or milestone.</li>
-          <li><strong>Team</strong> — Show only steps that involve a specific team.</li>
-          <li><strong>Status</strong> — Filter by Overdue, This Week, Upcoming, or No Date.</li>
-        </ul>
-      </div>
-      <div class="guide-section">
-        <h4>Views</h4>
-        <ul>
-          <li><strong>List</strong> — Sortable table. Click any column header to sort.</li>
-          <li><strong>Timeline</strong> — Steps grouped by month, collapsible sections.</li>
-          <li><strong>Compact</strong> — Hides description and notes for a denser overview.</li>
-        </ul>
-      </div>
-      <div class="guide-section">
-        <h4>Row colours &amp; dates</h4>
-        <ul>
-          <li><span class="color-dot" style="background:#ffcccc;border:1px solid #f5a0a0"></span><strong>Red row</strong> — Step is overdue (past due date).</li>
-          <li><span class="color-dot" style="background:#dcfce7;border:1px solid #86efac"></span><strong>Green row</strong> — Step is due this week.</li>
-          <li><strong>Wks ↔ today</strong> — Live countdown from today. Negative = overdue.</li>
-          <li>Dates shown are the Monday of that week.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="guide-card">
-      <h3>RACI — definitions</h3>
-      <p>RACI defines each team's role for every step. Use the <strong>Steps</strong> tab to see full assignments.</p>
-      <table class="raci-table">
-        <thead><tr><th style="width:44px">Letter</th><th style="width:110px">Role</th><th>What it means</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><span class="raci-badge raci-R">R</span></td>
-            <td style="font-weight:600">Responsible</td>
-            <td>Does the work. The team or person who executes the task.</td>
-          </tr>
-          <tr>
-            <td><span class="raci-badge raci-A">A</span></td>
-            <td style="font-weight:600">Accountable</td>
-            <td>Owns the outcome and gives final approval. Only one per step.</td>
-          </tr>
-          <tr>
-            <td><span class="raci-badge raci-C">C</span></td>
-            <td style="font-weight:600">Consulted</td>
-            <td>Provides input before the step is done. Two-way communication.</td>
-          </tr>
-          <tr>
-            <td><span class="raci-badge raci-I">I</span></td>
-            <td style="font-weight:600">Informed</td>
-            <td>Kept in the loop after the step is done. One-way communication.</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="guide-section" style="margin-top:1.6rem">
-        <h4>Step types</h4>
-        <table class="raci-table">
-          <thead><tr><th style="width:100px">Badge</th><th>Description</th></tr></thead>
-          <tbody>
-            <tr><td><span class="badge badge-CHECKPOINT">Checkpoint</span></td><td>Key review or approval gate.</td></tr>
-            <tr><td><span class="badge badge-MEETING">Meeting</span></td><td>Scheduled team meeting or presentation.</td></tr>
-            <tr><td><span class="badge badge-DEADLINE">Deadline</span></td><td>Hard cutoff — something must be completed by this date.</td></tr>
-            <tr><td><span class="badge badge-DELIVERABLE">Deliverable</span></td><td>A tangible output must be ready and handed over.</td></tr>
-            <tr><td><span class="badge badge-STEP">Step</span></td><td>A general process action or task.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>`;
-}
-
 // ── render TABLE (season) ─────────────────────────────────────────────────────
 function renderTable(rows){
   if(!rows.length) return `<div class="empty-state"><h3>No steps found</h3><p>Try adjusting filters.</p></div>`;
   function th(col,label){ const cls=state.sortCol===col?'sort-'+state.sortDir:''; return `<th class="${cls}" data-sort="${col}">${label}</th>`; }
   const rowsHtml=rows.map(row=>{
     const type=getType(row),stage=getStage(row),desc=getDesc(row),comment=getComment(row);
-    const dateStr=getDate(row),fmted=fmtDate(dateStr),teams=getTeams(row);
-    const status=getStatus(row);
-    const overdue=status==='overdue',thisWeek=status==='this-week';
-    const weeksNum=calcWeeksFromToday(dateStr);
-    const weeksFmt=weeksNum===null?'—':weeksNum===0?'&lt;1w':weeksNum<0?`<span class="overdue">${weeksNum}w</span>`:`${weeksNum}w`;
+    const dateStr=getDate(row),fmted=fmtDate(dateStr),weeks=getWeeks(row),teams=getTeams(row);
+    const overdue=isOverdue(dateStr),thisWeek=isThisWeek(dateStr),todayRow=isThisMonth(dateStr);
     const dots=teams.map(t=>`<span class="${teamCls(t)}" title="${esc(t)}">${TEAM_SHORT[t]||t.slice(0,3)}</span>`).join('');
     const dateCls=overdue?'overdue':thisWeek?'upcoming':'';
-    const rowCls=overdue?'row-overdue':thisWeek?'row-this-week':'';
-    return `<tr class="${rowCls}">
+    return `<tr class="${todayRow&&!overdue?'today-row':''}">
       <td>${type?`<span class="${badgeCls(type)}">${esc(type)}</span>`:''}</td>
       <td class="td-stage">${esc(stage)}</td>
       <td class="td-desc">${esc(desc)}</td>
       <td class="td-date ${dateCls}">${fmted||'—'}</td>
-      <td class="td-weeks">${weeksFmt}</td>
+      <td class="td-weeks">${weeks!==null?weeks:'—'}</td>
       <td><div class="team-dots">${dots}</div></td>
       <td class="td-comment">${esc(comment)}</td>
     </tr>`;
   }).join('');
-  return `<div class="table-wrap fade-in${state.compact?' compact':''}"><table class="gtm-table"><thead><tr>${th('TYPE','Type')}${th('STAGE','Stage')}
-    <th class="td-desc">Description</th>${th('DATE','Date')}<th>Wks ↔ today</th><th>Teams</th><th class="td-comment">Notes</th>
+  return `<div class="table-wrap fade-in"><table class="gtm-table"><thead><tr>${th('TYPE','Type')}${th('STAGE','Stage')}
+    <th>Description</th>${th('DATE','Date')}<th>Wks</th><th>Teams</th><th>Notes</th>
   </tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
 }
 
 // ── render TIMELINE (season) ──────────────────────────────────────────────────
 function renderTimeline(rows){
   if(!rows.length) return `<div class="empty-state"><h3>No steps found</h3><p>Try adjusting filters.</p></div>`;
-  const sorted=[...rows].sort((a,b)=>{ const da=a.DATE?new Date(a.DATE):new Date('2099-01-01'); const db=b.DATE?new Date(b.DATE):new Date('2099-01-01'); return da-db; });
+  const sorted=[...rows].sort((a,b)=>{ const da=getDate(a)?new Date(getDate(a)):new Date('2099-01-01'); const db=getDate(b)?new Date(getDate(b)):new Date('2099-01-01'); return da-db; });
   const groups={};
   sorted.forEach(row=>{ const d=getDate(row); const key=d?fmtMonthYear(d):'No Date'; if(!groups[key]) groups[key]={rows:[],thisMonth:d?isThisMonth(d):false}; groups[key].rows.push(row); });
   const html=Object.entries(groups).map(([month,grp])=>{
@@ -564,7 +456,7 @@ function renderOverlap(){
   if(!activeSeasones.length) return `<div class="empty-state"><h3>No seasons selected</h3><p>Toggle at least one season above.</p></div>`;
   const allRows=[];
   activeSeasones.forEach(s=>{
-    (getSeasonData(s)||[]).forEach(r=>{ if(getDate(r)) allRows.push({...r,_season:s}); });
+    (getSeasonData(s)||[]).forEach(r=>{ if(getDate(r,s)) allRows.push({...r,_season:s}); });
   });
   allRows.sort((a,b)=>new Date(getDate(a))-new Date(getDate(b)));
   if(!allRows.length) return `<div class="empty-state"><h3>No steps with dates found</h3></div>`;
@@ -609,6 +501,67 @@ function toggleOverlap(s,val){
   document.querySelectorAll(`[id$="stoggle-${s}"]`).forEach(el=>el.classList.toggle('off',!val));
   render();
 }
+function toggleSimPanel(){state.simOpen=!state.simOpen;render();}
+function setSim(val){
+  state.sim[state.tab]=val||null;
+  const tab=state.tab,vc=document.getElementById('view-content');
+  if(SEASONS.includes(tab)){
+    const all=getSeasonData();const filtered=filterRows(all);const sorted=state.view==='table'?sortRows(filtered):filtered;
+    document.getElementById('results-count').textContent=`${filtered.length} of ${all.length} steps`;
+    renderLegend(filtered);
+    vc.innerHTML=state.view==='table'?renderTable(sorted):renderTimeline(filtered);
+    if(state.view==='table'){document.querySelectorAll('.gtm-table th[data-sort]').forEach(th=>{th.addEventListener('click',()=>{const col=th.dataset.sort;state.sortCol=col;state.sortDir=state.sortCol===col&&state.sortDir==='asc'?'desc':'asc';state.sortCol=col;render();});});}
+  }
+  updateSimBadge();
+}
+function updateSimBadge(){
+  const s=state.tab,panel=document.getElementById('sim-bar');
+  if(!panel)return;
+  const changed=state.sim[s]&&state.sim[s]!==LAUNCH_DATES[s];
+  let badge=panel.querySelector('.sim-active-badge');
+  if(changed&&!badge){const inner=panel.querySelector('.sim-inner');if(inner)inner.insertAdjacentHTML('beforeend','<span class="sim-active-badge">Simulating</span>');}
+  else if(!changed&&badge){badge.remove();}
+}
+function resetSim(){
+  state.sim[state.tab]=null;
+  const panel=document.getElementById('sim-bar');
+  if(panel){
+    const si=document.getElementById('sim-date');
+    if(si)si.value=LAUNCH_DATES[state.tab]||'';
+    updateSimBadge();
+  }
+  const vc=document.getElementById('view-content'),tab=state.tab;
+  if(SEASONS.includes(tab)){
+    const all=getSeasonData();const filtered=filterRows(all);const sorted=state.view==='table'?sortRows(filtered):filtered;
+    document.getElementById('results-count').textContent=`${filtered.length} of ${all.length} steps`;
+    renderLegend(filtered);
+    vc.innerHTML=state.view==='table'?renderTable(sorted):renderTimeline(filtered);
+    if(state.view==='table'){document.querySelectorAll('.gtm-table th[data-sort]').forEach(th=>{th.addEventListener('click',()=>{const col=th.dataset.sort;state.sortCol=col;state.sortDir=state.sortCol===col&&state.sortDir==='asc'?'desc':'asc';state.sortCol=col;render();});});}
+  }
+}
+function renderSimPanel(){
+  const s=state.tab,panel=document.getElementById('sim-bar');
+  if(!panel)return;
+  if(!SEASONS.includes(s)||!state.simOpen){panel.classList.remove('open');panel.innerHTML='';return;}
+  const origDate=LAUNCH_DATES[s]||'';
+  const curDate=state.sim[s]||origDate;
+  const changed=state.sim[s]&&state.sim[s]!==origDate;
+  if(panel.dataset.season===s&&panel.classList.contains('open')){
+    const si=document.getElementById('sim-date');
+    if(si&&document.activeElement!==si)si.value=curDate.slice(0,10);
+    updateSimBadge();
+    return;
+  }
+  panel.dataset.season=s;
+  panel.classList.add('open');
+  panel.innerHTML=`<div class="sim-inner">
+    <span class="sim-label">&#128197; Simulate Launch — ${SEASON_LABELS[s]}</span>
+    <span style="font-size:.72rem;font-weight:600;color:var(--gray2)">Launch date:</span>
+    <input type="date" class="sim-date-input" id="sim-date" value="${curDate.slice(0,10)}" oninput="setSim(this.value)">
+    <button class="sim-reset-btn" onclick="resetSim()">&#8635; Reset to original</button>
+    ${changed?'<span class="sim-active-badge">Simulating</span>':''}
+  </div>`;
+}
 
 // ── render CALENDAR ───────────────────────────────────────────────────────────
 function renderCalendar(){
@@ -621,7 +574,7 @@ function renderCalendar(){
   const byDate={};
   SEASONS.filter(s=>state.overlapSeasons[s]).forEach(s=>{
     (getSeasonData(s)||[]).forEach(r=>{
-      const d=getDate(r); if(!d) return;
+      const d=getDate(r,s); if(!d) return;
       const dt=new Date(d); if(isNaN(dt)) return;
       const key=`${dt.getFullYear()}-${dt.getMonth()}-${dt.getDate()}`;
       if(!byDate[key]) byDate[key]=[];
@@ -723,12 +676,7 @@ function render(){
   const sb=document.getElementById('summary-bar');
   const tab=state.tab;
 
-  if(tab==='GUIDE'){
-    sb.style.display='none';
-    ti.innerHTML='';
-    vc.innerHTML=renderGuide();
-  }
-  else if(SEASONS.includes(tab)){
+  if(SEASONS.includes(tab)){
     sb.style.display='flex';
     const all=getSeasonData(); const filtered=filterRows(all); const sorted=state.view==='table'?sortRows(filtered):filtered;
     ti.innerHTML=toolbarSeason(all);
@@ -747,7 +695,6 @@ function render(){
     const ft=document.getElementById('filter-type'); ft&&ft.addEventListener('change',e=>{state.filterType=e.target.value;render();});
     const fs=document.getElementById('filter-stage'); fs&&fs.addEventListener('change',e=>{state.filterStage=e.target.value;render();});
     const fm=document.getElementById('filter-team'); fm&&fm.addEventListener('change',e=>{state.filterTeam=e.target.value;render();});
-    const fst=document.getElementById('filter-status'); fst&&fst.addEventListener('change',e=>{state.filterStatus=e.target.value;render();});
     document.querySelectorAll('.view-btn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); state.view=btn.dataset.view; render(); }));
   }
   else if(tab==='STEPS'){
@@ -768,6 +715,7 @@ function render(){
     ti.innerHTML=toolbarCalendar();
     vc.innerHTML=renderCalendar();
   }
+  renderSimPanel();
 }
 
 // ── init ──────────────────────────────────────────────────────────────────────
@@ -779,7 +727,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       document.querySelectorAll('.season-tab').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       state.tab=btn.dataset.tab;
-      state.filterType=''; state.filterStage=''; state.filterTeam=''; state.search=''; state.filterStatus='';
+      state.filterType=''; state.filterStage=''; state.filterTeam=''; state.search='';
       state.calSelected=null;
       render();
     });
