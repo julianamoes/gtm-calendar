@@ -624,6 +624,7 @@ function exportCSV(){
 
 // ── render CALENDAR ───────────────────────────────────────────────────────────
 function renderCalendar(){
+  window._calReg={}; let _ri=0;
   const yr=state.calYear, mo=state.calMonth;
   const firstDay=new Date(yr,mo,1), lastDay=new Date(yr,mo+1,0);
   const startDow=firstDay.getDay();
@@ -666,11 +667,13 @@ function renderCalendar(){
     const count=steps.length;
     const allStepsData=steps.map(row=>({s:row._season,stage:getStage(row),name:getName(row)||getMenu(row),type:getType(row),desc:getDesc(row),date:getDate(row,row._season),weeks:getWeeks(row),teams:getTeams(row),comment:getComment(row)}));
     const dateLabel=`${MONTHS[mo]} ${d}, ${yr}`;
-    const chips=steps.slice(0,MAX_CHIPS).map((row,i)=>{
-      const s=row._season,label=getName(row)||getStage(row)||getType(row);
-      return `<span class="cal-chip cal-chip-${s}" title="${esc(getName(row)||getStage(row))}" onclick="showCalDetail(${JSON.stringify(JSON.stringify({s,stage:getStage(row),name:getName(row)||getMenu(row),type:getType(row),desc:getDesc(row),date:getDate(row,s),weeks:getWeeks(row),teams:getTeams(row),comment:getComment(row)}))},event)">${esc(label)}</span>`;
+    const chips=steps.slice(0,MAX_CHIPS).map((row)=>{
+      const k='s'+(_ri++); const s=row._season,label=getName(row)||getStage(row)||getType(row);
+      window._calReg[k]={s,stage:getStage(row),name:getName(row)||getMenu(row),type:getType(row),desc:getDesc(row),date:getDate(row,s),weeks:getWeeks(row),teams:getTeams(row),comment:getComment(row)};
+      return `<span class="cal-chip cal-chip-${s}" title="${esc(getName(row)||getStage(row))}" onclick="showCalDetailByKey('${k}',event)">${esc(label)}</span>`;
     }).join('');
-    const more=count>MAX_CHIPS?`<span class="cal-more" style="cursor:pointer" onclick="showDaySteps(${JSON.stringify(JSON.stringify({steps:allStepsData,dateLabel}))},event)">+${count-MAX_CHIPS} more</span>`:'';
+    const dk='d'+(_ri++); window._calReg[dk]={steps:allStepsData,dateLabel};
+    const more=count>MAX_CHIPS?`<span class="cal-more" style="cursor:pointer" onclick="showDayStepsByKey('${dk}',event)">+${count-MAX_CHIPS} more</span>`:'';
     cells.push(`<div class="cal-cell${isToday?' is-today':''}" data-count="${count}"><div class="cal-day-num${isToday?' today':''}">${d}</div>${chips}${more}</div>`);
   }
   // Trailing days
@@ -750,6 +753,20 @@ function renderDaySteps(data){
 function showDaySteps(jsonStr,evt){
   evt&&evt.stopPropagation();
   const data=JSON.parse(jsonStr);
+  const detail=document.getElementById('cal-detail');
+  if(detail) detail.outerHTML=renderDaySteps(data);
+  else document.getElementById('view-content').insertAdjacentHTML('beforeend',renderDaySteps(data));
+}
+function showCalDetailByKey(k,evt){
+  evt&&evt.stopPropagation();
+  state.calSelected=window._calReg[k];
+  const detail=document.getElementById('cal-detail');
+  if(detail) detail.outerHTML=renderCalDetail(state.calSelected);
+  else document.getElementById('view-content').insertAdjacentHTML('beforeend',renderCalDetail(state.calSelected));
+}
+function showDayStepsByKey(k,evt){
+  evt&&evt.stopPropagation();
+  const data=window._calReg[k];
   const detail=document.getElementById('cal-detail');
   if(detail) detail.outerHTML=renderDaySteps(data);
   else document.getElementById('view-content').insertAdjacentHTML('beforeend',renderDaySteps(data));
